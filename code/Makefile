@@ -10,8 +10,9 @@ CXXFLAGS = -ffreestanding -fno-exceptions -fno-rtti -fno-stack-protector \
 OBJS = boot/boot.o \
        kernel/entry.o \
        kernel/kernel.o \
-       kernel/vga.o \
+       vga/vga.o \
 	drivers/kb.o \
+	drivers/pic.o \
        kernel/str.o \
        fs/fs.o \
        shell/shell.o
@@ -27,8 +28,11 @@ kernel/entry.o: kernel/entry.asm
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-kernel.bin: $(filter-out boot/boot.o, $(OBJS)) linker.ld
+kernel.elf: $(filter-out boot/boot.o, $(OBJS)) linker.ld
 	$(LD) -T linker.ld -o $@ $(filter-out boot/boot.o linker.ld, $^)
+
+kernel.bin: kernel.elf
+	i686-elf-objcopy -O binary kernel.elf kernel.bin
 
 bear.img: boot/boot.o kernel.bin
 	cat boot/boot.o kernel.bin > bear.img

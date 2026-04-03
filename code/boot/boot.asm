@@ -1,6 +1,5 @@
 [BITS 16]
 [ORG 0x7C00]
-; stupid stupid bootloader code, 1:1 from osdev wiki (somewhat lmfao)
 start:
     cli
     xor ax, ax
@@ -67,6 +66,6 @@ gdt_desc:
     dd gdt_start
 
 msg db 'Welcome to BearNugget', 0x0D, 0x0A, 0
-; why isnt this being called man 
 times 510-($-$$) db 0
 dw 0xAA55
+
